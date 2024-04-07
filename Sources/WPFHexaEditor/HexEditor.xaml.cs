@@ -4155,6 +4155,7 @@ namespace WpfHexaEditor
 
             CopyAsCMenu.IsEnabled = false;
             CopyAsciicMenu.IsEnabled = false;
+            CopyCp949Menu.IsEnabled = false;
             FindAllCMenu.IsEnabled = false;
             CopyHexaCMenu.IsEnabled = false;
             UndoCMenu.IsEnabled = false;
@@ -4169,9 +4170,11 @@ namespace WpfHexaEditor
             if (SelectionLength > 0)
             {
                 CopyAsciicMenu.IsEnabled = true;
+                CopyCp949Menu.IsEnabled = true;
                 CopyAsCMenu.IsEnabled = true;
                 FindAllCMenu.IsEnabled = true;
                 CopyHexaCMenu.IsEnabled = true;
+                CopyCp949Menu.IsEnabled = true;
 
                 if (!ReadOnlyMode)
                 {
@@ -4206,6 +4209,9 @@ namespace WpfHexaEditor
                     break;
                 case nameof(CopyAsciicMenu):
                     CopyToClipboard(CopyPasteMode.AsciiString);
+                    break;
+                case nameof(CopyCp949Menu):
+                    CopyToClipboard(CopyPasteMode.CP949String);
                     break;
                 case nameof(CopyCSharpCMenu):
                     CopyToClipboard(CopyPasteMode.CSharpCode);

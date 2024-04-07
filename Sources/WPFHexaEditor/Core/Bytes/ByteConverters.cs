@@ -132,7 +132,8 @@ namespace WpfHexaEditor.Core.Bytes
             {
                 case ByteToString.AsciiEncoding:
                     return Encoding.ASCII.GetString(buffer, 0, buffer.Length);
-
+                case ByteToString.CP949Encoding:
+                    return Encoding.GetEncoding(949).GetString(buffer, 0, buffer.Length);
                 case ByteToString.ByteToCharProcess:
                     var builder = new StringBuilder();
 

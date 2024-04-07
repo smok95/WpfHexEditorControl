@@ -891,6 +891,10 @@ namespace WpfHexaEditor.Core.Bytes
                     sBuffer = ByteConverters.BytesToString(buffer);
                     da.SetText(sBuffer, TextDataFormat.Text);
                     break;
+                case CopyPasteMode.CP949String:
+                    sBuffer = ByteConverters.BytesToString(buffer, ByteToString.CP949Encoding);
+                    da.SetText(sBuffer, TextDataFormat.Text);
+                    break;
                 case CopyPasteMode.HexaString:
                     sBuffer = ByteConverters.ByteToHex(buffer);
                     da.SetText(sBuffer, TextDataFormat.Text);

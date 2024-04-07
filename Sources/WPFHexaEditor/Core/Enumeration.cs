@@ -40,6 +40,7 @@ namespace WpfHexaEditor.Core
         Byte,
         HexaString,
         AsciiString,
+        CP949String,
         TblString,
         CSharpCode,
         VbNetCode,
@@ -112,7 +113,12 @@ namespace WpfHexaEditor.Core
         /// <summary>
         /// System.Text.Encoding.ASCII string encoder
         /// </summary>
-        AsciiEncoding
+        AsciiEncoding,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        CP949Encoding,        
     }
 
     /// <summary>

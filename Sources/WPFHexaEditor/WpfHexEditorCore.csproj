@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-	  <TargetFrameworks>net48;net70-windows</TargetFrameworks>
+	  <TargetFrameworks>net48</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <RootNamespace>WpfHexaEditor</RootNamespace>
     <AssemblyName>WPFHexaEditor</AssemblyName>
@@ -18,7 +18,7 @@
     <Product>WpfHexaEditor</Product>
     <Copyright>Apache 2.0</Copyright>
     <AssemblyVersion>2.1.7.0</AssemblyVersion>
-    <FileVersion>2.1.7</FileVersion>
+    <FileVersion>2.1.8</FileVersion>
     <Version>2.1.7</Version>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PackageTags>character-table;hexadecimal;binary;editor;hexeditor;tbl;hexedit</PackageTags>
@@ -31,6 +31,7 @@
     <IncludeSource>true</IncludeSource>
     <IncludeSymbols>false</IncludeSymbols>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.1|AnyCPU'">

@@ -328,4 +328,7 @@
   <data name="BytesTagString" xml:space="preserve">
     <value>Bytes</value>
   </data>
+  <data name="CopyAsCP949String" xml:space="preserve">
+    <value>Copy As Windows 949</value>
+  </data>
 </root>

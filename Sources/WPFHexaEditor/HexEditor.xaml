@@ -84,6 +84,14 @@
                     <Image Source="/WPFHexaEditor;component/Resources/Icon/Copy-Icon.ico" />
                 </MenuItem.Icon>
             </MenuItem>
+            <MenuItem
+                x:Name="CopyCp949Menu"
+                Click="CopyToClipBoardCMenu_Click"
+                Header="{x:Static p:Resources.CopyAsCP949String}">
+                <MenuItem.Icon>
+                    <Image Source="/WPFHexaEditor;component/Resources/Icon/Copy-Icon.ico" />
+                </MenuItem.Icon>
+            </MenuItem>
             <MenuItem x:Name="CopyAsCMenu" Header="{x:Static p:Resources.CopySelectionAsString}">
                 <MenuItem
                     x:Name="CopyCcMenu"
