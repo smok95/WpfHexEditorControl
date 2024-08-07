@@ -19,7 +19,7 @@
     <Copyright>Apache 2.0</Copyright>
     <AssemblyVersion>2.1.7.0</AssemblyVersion>
     <FileVersion>2.1.8</FileVersion>
-    <Version>2.1.7</Version>
+    <Version>2.1.8</Version>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PackageTags>character-table;hexadecimal;binary;editor;hexeditor;tbl;hexedit</PackageTags>
     <ApplicationIcon />
@@ -32,6 +32,7 @@
     <IncludeSymbols>false</IncludeSymbols>
     <NeutralLanguage>en-US</NeutralLanguage>
     <OutputType>Library</OutputType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.1|AnyCPU'">

@@ -11,10 +11,13 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Xml.Linq;
@@ -5293,8 +5296,50 @@ namespace WpfHexaEditor
             DependencyProperty.Register(nameof(PreloadByteInEditorMode), typeof(PreloadByteInEditor),
                 typeof(HexEditor), new PropertyMetadata(PreloadByteInEditor.None));
 
-        private void Control_Loaded(object sender, RoutedEventArgs e) =>
+        private void Control_Loaded(object sender, RoutedEventArgs e) { 
             ForcePreloadByteInEditor(PreloadByteInEditorMode); //Preload byte or not...
+
+            Window parentWindow = Window.GetWindow(this);
+            if(parentWindow != null)
+            {
+                HwndSource source = PresentationSource.FromVisual(parentWindow) as HwndSource;
+                if(source != null)
+                {
+                    source.AddHook(WndProc);
+                }
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct COPYDATASTRUCT
+        {
+            public IntPtr dwData;
+            public int cbData;
+            public IntPtr lpData;
+        }
+
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wp, IntPtr lp, ref bool handled)
+        {
+            const int WM_COPYDATA = 0x004A;
+            switch(msg)
+            {
+                case WM_COPYDATA:
+                    {
+                        COPYDATASTRUCT cds = (COPYDATASTRUCT)Marshal.PtrToStructure(lp, typeof(COPYDATASTRUCT));
+                        if(cds.cbData > 0 && cds.lpData != IntPtr.Zero)
+                        {
+                            byte[] bytes = new byte[cds.cbData];
+                            Marshal.Copy(cds.lpData, bytes, 0, cds.cbData);
+                            this.Stream = new MemoryStream(bytes);
+                        }
+
+                        handled = true;
+                    }
+                    break;
+            }
+
+            return IntPtr.Zero;
+        }
 
         /// <summary>
         /// Number of line to preload in editor

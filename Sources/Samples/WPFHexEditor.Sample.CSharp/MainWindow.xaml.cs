@@ -6,26 +6,77 @@
 // NOT A TRUE PROJECT! IT'S JUST FOR TESTING THE HEXEDITOR... DO NOT WATCH THE CODE LOL ;) 
 //////////////////////////////////////////////
 
+using System;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Xml.Linq;
 using Microsoft.Win32;
 using WpfHexaEditor.Core;
 using WpfHexaEditor.Core.CharacterTable;
 using WpfHexaEditor.Dialog;
+using static WpfHexaEditor.HexEditor;
 
 namespace WPFHexaEditorExample
 {
     public partial class MainWindow
     {
+        const int WM_COPYDATA = 0x004A;
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, ref COPYDATASTRUCT lParam);
+
         public MainWindow()
         {
             //FORCE CULTURE
             //System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en");
 
             InitializeComponent();
+
+            HwndSource source = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
+            source.AddHook(WndProc);
+/*
+            byte[] data = Encoding.UTF8.GetBytes("Hello, Receiver!");
+
+            COPYDATASTRUCT cds;
+            cds.dwData = IntPtr.Zero;
+            cds.cbData = data.Length;
+            cds.lpData = Marshal.AllocHGlobal(data.Length);
+            Marshal.Copy(data, 0, cds.lpData, data.Length);
+*/
+            //SendMessage(source.Handle, WM_COPYDATA, IntPtr.Zero, ref cds);
+
+           // Marshal.FreeHGlobal(cds.lpData);
+        }
+
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wp, IntPtr lp, ref bool handled)
+        {
+            
+            switch(msg)
+            {
+                case WM_COPYDATA:
+                    {
+                        COPYDATASTRUCT cds = (COPYDATASTRUCT)Marshal.PtrToStructure(lp, typeof(COPYDATASTRUCT));
+                        if(cds.cbData > 0 && cds.lpData != IntPtr.Zero)
+                        {
+                            byte[] bytes = new byte[cds.cbData];
+                            Marshal.Copy(cds.lpData, bytes, 0, cds.cbData);
+
+                            using(MemoryStream stream = new MemoryStream(bytes))
+                            {
+                                this.HexEdit.Stream = stream;
+                            }
+                        }
+
+                        handled = true;
+                    }
+                    break;
+            }
+
+            return IntPtr.Zero;
         }
 
         private void OpenMenu_Click(object sender, RoutedEventArgs e)
@@ -151,7 +202,7 @@ namespace WPFHexaEditorExample
         {
             var fileDialog = new SaveFileDialog();
 
-            if (fileDialog.ShowDialog() is not null)
+            if (fileDialog.ShowDialog() != null)
                 HexEdit.SubmitChanges(fileDialog.FileName, true);
         }
 
@@ -191,25 +242,33 @@ namespace WPFHexaEditorExample
 
         private void FileTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (sender is not TabControl tc) return;
-            if (tc.SelectedValue is not TabItem ti) return;
-
-            //Set the tag of last selected ta to currentstate
-            if (e.RemovedItems.Count > 0 && e.RemovedItems[0] is TabItem lastSelectedTabItem)
-                lastSelectedTabItem.Tag = HexEdit.CurrentState;
-
-            //Change loaded file and update the current state
-            var filename = ti.ToolTip.ToString();
-            if (!File.Exists(filename)) return;
-
-            HexEdit.FileName = filename;
-
-            //Setstate 
-            if (ti.Tag is XDocument doc)
+            if (sender is TabControl tc)
             {
-                HexEdit.CurrentState = doc;
-                SetReadOnlyMenu.IsChecked = HexEdit.ReadOnlyMode;
+                if(tc.SelectedValue is TabItem ti)
+                {
+
+                    //Set the tag of last selected ta to currentstate
+                    if(e.RemovedItems.Count > 0 && e.RemovedItems[0] is TabItem lastSelectedTabItem)
+                        lastSelectedTabItem.Tag = HexEdit.CurrentState;
+
+                    //Change loaded file and update the current state
+                    var filename = ti.ToolTip.ToString();
+                    if(!File.Exists(filename))
+                        return;
+
+                    HexEdit.FileName = filename;
+
+                    //Setstate 
+                    if(ti.Tag is XDocument doc)
+                    {
+                        HexEdit.CurrentState = doc;
+                        SetReadOnlyMenu.IsChecked = HexEdit.ReadOnlyMode;
+                    }
+                }
+                    
             }
+            
+
         }
 
         private void Image_MouseUp(object sender, MouseButtonEventArgs e) => CloseFile();
